@@ -563,7 +563,20 @@ if ( ! class_exists( 'BOOPIS_RFQ_Front' ) ) {
 		}
 
 
-		public function boopis_rfq_get_item_quantity( $product_id = false ) {
+/**
+ * Get RFQ quantity and show on product detail page.
+ *
+ * Get a current quote and if the product being displayed is in the quote and has a quantity,
+ * display a formatted message with the quote quantity and link back to the RFQ page.
+ *
+ * @since 3.0.3
+ *
+ * @global object $woocommerce WooCommerce object to hook into.
+ *
+ * @param int $product_id Product ID.
+ * @return text $quantityInQuote Formatted message.
+ */
+                public function boopis_rfq_get_item_quantity( $product_id = false ) {
 
                     global $woocommerce;
                     $quantityInQuote = "";
