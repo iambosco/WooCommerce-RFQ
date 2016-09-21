@@ -135,7 +135,8 @@ if ( ! class_exists( 'BOOPIS_RFQ_Front' ) ) {
 							'max_value' => apply_filters( 'woocommerce_quantity_input_max', $product->backorders_allowed() ? '' : $product->get_stock_quantity(), $product )
 							) );
 					}
-					echo "<input type=\"hidden\" name=\"add-to-quote\" value=\"". esc_attr( $product->id ) . "\" />";
+                                        echo "<input type=\"hidden\" name=\"add-to-quote\" value=\"". esc_attr( $product->id ) . "\" />";
+					echo $this->boopis_rfq_get_item_quantity($product->id);
 					echo "<button type=\"submit\" class=\"single_add_to_quote_button button alt\">" . apply_filters('single_add_to_cart_text', __( 'Inquire', 'boopis-woocommerce-rfq' ), $product->product_type) . "</button>";
 
 				} elseif( $product->is_type( 'variable' ) ) {
@@ -145,6 +146,7 @@ if ( ! class_exists( 'BOOPIS_RFQ_Front' ) ) {
 					echo "<div class=\"variations_button\">";
 					echo "<input type=\"hidden\" name=\"variation_id\" value=\"\" />";
 					woocommerce_quantity_input();
+					echo $this->boopis_rfq_get_item_quantity($product->id);
 			    echo "<button type=\"submit\" class=\"single_add_to_quote_button button alt\">" . apply_filters('single_add_to_cart_text', __( 'Inquire', 'boopis-woocommerce-rfq' ), $product->product_type) . "</button>";
 					echo "</div>";
 					echo "</div>";
@@ -155,10 +157,12 @@ if ( ! class_exists( 'BOOPIS_RFQ_Front' ) ) {
 
 				} elseif( $product->is_type( 'grouped' ) ) {
 
+				echo $this->boopis_rfq_get_item_quantity($product->id);
 		  		echo "<button type=\"submit\" class=\"single_add_to_quote_button button alt\">" . apply_filters('single_add_to_cart_text', __( 'Inquire', 'boopis-woocommerce-rfq' ), $product->product_type) . "</button>";
 
 				} elseif( $product->is_type( 'external' ) ) {
 
+					echo $this->boopis_rfq_get_item_quantity($product->id);
 					echo "<p class=\"quote\"><a href=\"" . esc_url( $product_url ) . "\" rel=\"nofollow\" class=\"single_add_to_quote_button button alt\">" . apply_filters('single_add_to_cart_text', $button_text, 'external') . "</a></p>";
 
 				}
@@ -558,6 +562,31 @@ if ( ! class_exists( 'BOOPIS_RFQ_Front' ) ) {
 		  wc_add_notice( apply_filters('boopis_rfq_add_to_quote_message', $message) );
 		}
 
+
+		public function boopis_rfq_get_item_quantity( $product_id = false ) {
+
+                    global $woocommerce;
+                    $quantityInQuote = "";
+                    if ( sizeof( $woocommerce->quote->boopis_get_quote() ) > 0 ) {
+                        foreach ( $woocommerce->quote->boopis_get_quote() as $quote_item_key => $values ) {
+                            $_product = $values['data'];
+                            if ( $_product->exists() && $values['quantity'] > 0 && $_product->id == $product_id ) {
+                                $quantityInQuote = "<span class=\"in-quote\">"
+                                        .$values['quantity']
+                                        ." Currently in "
+                                        ."<a href=\""
+                                        .get_permalink( get_option('boopis_rfq_page_id') )
+                                        ."\">"
+                                        ."RFQ</span>";
+                                break;
+                            }
+                        }
+                    }
+                  
+                  return $quantityInQuote;
+
+                }                
+                
 	} // End Class
 
 
