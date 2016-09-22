@@ -590,7 +590,7 @@ if ( ! class_exists( 'BOOPIS_RFQ_Front' ) ) {
                                         ."<a href=\""
                                         .get_permalink( get_option('boopis_rfq_page_id') )
                                         ."\">"
-                                        ."RFQ</span>";
+                                        ."RFQ</a></span>";
                                 break;
                             }
                         }
